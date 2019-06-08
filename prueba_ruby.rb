@@ -21,20 +21,31 @@ def build_web_page(data)
 
     photos=data["photos"].map {|x| x["img_src"]}
     
-    encabezados="<html>\n<head>\n</head>\n<body>\n<ul>\n"
+    paginaweb="<html>\n<head>\n</head>\n<body>\n<ul>\n"
     html= ""
     photos.each do |x|
       html+="<li><img src=\"#{x}\"></li>\n"
     end
     
     cierre="</ul>\n</body>\n</html>\n"
-    html="#{encabezados}"+"#{html}"+"#{cierre}"
+    html="#{paginaweb}"+"#{html}"+"#{cierre}"
     
       File.write('index.html', html)
     end
     
     data = request("https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=10")
     nasa=build_web_page(data)
+
+
+    def photos_count(data)
+        type = {"CHEMCAM" => 0, "MAHLI" => 0, "NAVCAM" => 0}
+        data["photos"].each do |cam|
+          type[cam["camera"]["name"]] += 1
+        end
+        return(type)
+      end
+      
+      puts photos_count(data)
     
     
 
